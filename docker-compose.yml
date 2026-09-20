@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: shortener-postgres
+    environment:
+      POSTGRES_DB: shortener
+      POSTGRES_USER: shortener
+      POSTGRES_PASSWORD: shortener
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U shortener -d shortener']
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    image: postgres:16
+    container_name: shortener-migrate
+    environment:
+      PGPASSWORD: shortener
+    volumes:
+      - ./migrations:/migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - |
+        psql -h postgres -U shortener -d shortener -f /migrations/001_init.sql
+
+  shortener:
+    build: .
+    container_name: shortener
+    environment:
+      STORAGE_TYPE: postgres
+      DATABASE_URL: postgres://shortener:shortener@postgres:5432/shortener
+    ports:
+      - '8080:8080'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  postgres_data:
