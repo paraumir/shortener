@@ -27,40 +27,6 @@ HTTP-сервис для сокращения URL на Go.
 - pgx
 - net/http
 
-## Структура проекта
-
-```text
-shortener/
-├── cmd/
-│   └── server/
-│       └── main.go
-├── internal/
-│   ├── config/
-│   │   └── config.go
-│   ├── handler/
-│   │   ├── handler.go
-│   │   └── handler_test.go
-│   ├── model/
-│   │   └── link.go
-│   ├── service/
-│   │   ├── generator.go
-│   │   ├── generator_test.go
-│   │   ├── service.go
-│   │   └── service_test.go
-│   └── storage/
-│       ├── storage.go
-│       ├── memory.go
-│       ├── memory_test.go
-│       ├── postgres.go
-│       └── postgres_test.go
-├── migrations/
-│   └── 001_init.sql
-├── Dockerfile
-├── docker-compose.yml
-├── go.mod
-└── README.md
-```
-
 ## Архитектура
 
 Сервис разделён на несколько слоёв:
